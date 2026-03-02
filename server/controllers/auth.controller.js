@@ -1,6 +1,7 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import sendEmail from "../utils/send.emails.js";
+import bcrypt from "bcrypt"
 
 const maxAge = 3 * 24 * 60 * 60 ;
 
@@ -57,4 +58,56 @@ const userSignup = async (req, res) => {
     }
 }
 
-export { userSignup }
+
+const userLogin = async (req,res) => {
+    try {
+        
+        const {email, password} = req.body
+
+        if( !email || !password ){
+            return res.status(400).json({
+                success: false,
+                message: "Enter the required field"
+            })
+        }
+
+        const user = await userModel.findOne({email})
+
+        if(!user) return res.status(400).json({
+            success: false,
+            message: "User does not exist"
+        })
+
+        const auth = await bcrypt.compare(password, user.password)
+        if(!auth) return res.status(400).json({
+            success: false,
+            message: "Password is Incorrect"
+        })
+
+        res.cookie("token", createToken(user.email, user._id), {
+            httpOnly: true,
+            maxAge: maxAge * 1000,
+            secure: true,
+            sameSite: "None",
+        });
+
+        res.status(201).json({
+            user: {
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                userName: user.userName,
+                userId: user._id,
+                profileSetup: user.profileSetup
+            },
+            success: true,
+            message: "User Successfully Logged In"
+        });
+
+
+    } catch (error) {
+        console.error("Signup error:", error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+export { userSignup, userLogin }
