@@ -28,13 +28,32 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    verifyOtp:{
+        type:String,
+        default:''
+    },
+    verifyOtpExpireAt:{
+        type:Number,
+        default:0
+    },
+    isAccountVerified:{
+        type:Boolean,
+        default:false
+    },
+    resetOtp:{
+        type:String,
+        default:''
+    },
+    resetOtpExpireAt:{
+        type:Number,
+        default:0
+    }
 })
 
-userSchema.pre("save", async function(next){
-    if(!this.isModified("password")) return next();
+userSchema.pre("save", async function(){
+    if(!this.isModified("password")) return ;
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
 });
 
 export default mongoose.model("User", userSchema);
