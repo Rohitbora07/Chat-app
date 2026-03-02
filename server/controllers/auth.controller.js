@@ -110,4 +110,29 @@ const userLogin = async (req,res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 }
-export { userSignup, userLogin }
+
+const userLogout = async (req,res) => {
+    try{
+
+        res.clearCookie("token",{
+            httpOnly: true,
+            maxAge: maxAge * 1000,
+            secure: true,
+            sameSite: "None",
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "User Successfully Logged Out"
+        })
+
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+export { userSignup, userLogin,userLogout }
