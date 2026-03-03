@@ -4,6 +4,9 @@ import sendEmail from "../utils/send.emails.js";
 import bcrypt from "bcrypt";
 import otpTemplate from "../emails/templates/otpTemplate.js";
 import welcomeTemplate from "../emails/templates/welcomeTemplate.js";
+import accVerifiedTemplate from "../emails/templates/accVerifiedTemplate.js";
+import resetPassOtpTemplate from "../emails/templates/resetPassOtpTemplate.js";
+import passResetTemplate from "../emails/templates/passResetTemplate.js";
 
 const maxAge = 3 * 24 * 60 * 60;
 
@@ -124,15 +127,13 @@ const userLogout = async(req, res) => {
 const sendVerificationOtp = async(req, res) => {
     try {
         const userId = req.user._id;
-        if (!userId)
-            return res.status(400).json({ success: false, message: "User ID is required" });
+        if (!userId) return res.status(400).json({ success: false, message: "User ID is required" });
 
+        // finding user using id which is recieved by authUser middleware
         const user = await userModel.findById(userId);
-        if (!user)
-            return res.status(404).json({ success: false, message: "User not found" });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-        if (user.isAccountVerified)
-            return res.status(400).json({ success: false, message: "Account is already verified" });
+        if (user.isAccountVerified) return res.status(400).json({ success: false, message: "Account is already verified" });
 
         const otp = String(Math.floor(100000 + Math.random() * 900000));
         user.verifyOtp = otp;
@@ -140,9 +141,9 @@ const sendVerificationOtp = async(req, res) => {
         await user.save();
 
         sendEmail(
-                user.email,
-                "Verify Your Email - OTP",
-                otpTemplate(user.firstName, otp),
+            user.email,
+            "Verify Your Email - OTP",
+            otpTemplate(user.firstName, otp),
             ).then(() => { console.log("Verification email sent successfully"); })
             .catch((err) => { console.error("Error sending verification email:", err); });
 
@@ -153,4 +154,99 @@ const sendVerificationOtp = async(req, res) => {
     }
 };
 
-export { userSignup, userLogin, userLogout, sendVerificationOtp };
+
+const verifyUserAccount = async(req, res) => {
+
+    try {
+        const { otp } = req.body;
+        const userId = req.user._id;
+        if (!otp) return res.status(400).json({ success: false, message: "OTP is required" });
+        if (!userId) return res.status(400).json({ success: false, message: "User ID is required" });
+
+        // finding user using id which is recieved by authUser middleware
+        const user = await userModel.findById(userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        if (user.isAccountVerified) return res.status(400).json({ success: false, message: "Account is already verified" });
+
+        if (user.verifyOtp !== otp) return res.status(400).json({ success: false, message: "Invalid OTP" });
+        if (user.verifyOtpExpireAt < Date.now()) return res.status(400).json({ success: false, message: "OTP has expired" });
+
+        user.isAccountVerified = true;
+        user.verifyOtp = null;
+        user.verifyOtpExpireAt = null;
+        await user.save();
+
+        sendEmail(
+            user.email,
+            "Your Account is Verified",
+            accVerifiedTemplate(user.firstName)
+        )
+
+        return res.status(200).json({ success: true, message: "Account verified successfully" });
+    } catch (error) {
+        console.error("Error verifying account:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const sendresetOtp = async(req, res) => {
+
+    try {
+        
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ success: false, message: "Email is required" });
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+        user.resetOtp = otp;
+        user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        sendEmail(
+            user.email,
+            "Reset Password OTP",
+            resetPassOtpTemplate(user.firstName, otp)
+        );
+
+        return res.status(200).json({ success: true, message: "Reset password OTP sent to email", otp: user.resetOtp });
+
+    } catch (error) {
+        console.error("Error sending reset password OTP:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+
+}
+
+
+const resetPassword = async(req, res) => {
+    try {
+        
+        const { email, otp, newPassword } = req.body;
+        if (!email || !otp || !newPassword) return res.status(400).json({ success: false, message: "Email, OTP and new password are required" });
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });  
+
+        if (user.resetOtp !== otp) return res.status(400).json({ success: false, message: "Invalid OTP" });
+        if (user.resetOtpExpireAt < Date.now()) return res.status(400).json({ success: false, message: "OTP has expired" });
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetOtp = null;
+        user.resetOtpExpireAt = null;
+        await user.save();
+
+        sendEmail(
+            user.email,
+            "Your Password has been Reset",
+            passResetTemplate(user.firstName)
+        );
+        return res.status(200).json({ success: true, message: "Password reset successfully" });
+
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+export { userSignup, userLogin, userLogout, sendVerificationOtp, verifyUserAccount, sendresetOtp, resetPassword };
