@@ -4,9 +4,11 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import userRouter from "./routes/auth.route.js";
+import connectCloudinary from "./config/cloudinary.js";
 
 dotenv.config();
 const app = express();
+connectCloudinary();
 
 const port = process.env.PORT || 4000;  
 
