@@ -22,7 +22,11 @@ const SignUpForm = () => {
                 toast.success("From is submmited")
                 setUser(response.data.user)
                 console.log(response.data)
-                navigate("/")
+                if(response.data.user.profileSetup){
+                    navigate("/")
+                }else{
+                    navigate("/profile")
+                }
             }else {
                 toast.error(response.data.message)
             }

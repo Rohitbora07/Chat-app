@@ -22,7 +22,11 @@ const LoginForm = () => {
             if(res.data.success){
                 setUser(res.data.user)
                 toast.success("Logged in Succesfully")
-                navigate("/")
+                if(res.data.user.profileSetup){
+                    navigate("/")
+                }else{
+                    navigate("/profile")
+                }
             }else {
                 toast.error(res.data.message)
             }

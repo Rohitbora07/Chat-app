@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AuthPage from "../features/Auth/pages/AuthPage";
 import Chatpage from "../features/chatLayout/pages/Chatpage";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Profile from "../features/Profile/pages/Profile";
 
 export const router = createBrowserRouter([
     {
@@ -10,6 +11,14 @@ export const router = createBrowserRouter([
         element: (
             <ProtectedRoute>
                 <Chatpage />
+            </ProtectedRoute>
+        )
+    },
+    {
+        path:"/profile",
+        element: (
+            <ProtectedRoute>
+                <Profile />
             </ProtectedRoute>
         )
     },

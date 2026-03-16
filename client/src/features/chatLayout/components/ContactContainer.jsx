@@ -16,8 +16,6 @@ const ContactContainer = () => {
       </div>
 
       <div class="flex-1 overflow-y-auto px-2 space-y-1">
-
-
         <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-800/70 transition cursor-pointer group">
           <img src="https://i.pravatar.cc/42" class="w-11 h-11 rounded-full" />
           <div class="flex-1">
@@ -26,7 +24,6 @@ const ContactContainer = () => {
           </div>
           <span class="text-xs text-gray-500">1h</span>
         </div>
-
       </div>
 
     </div>
