@@ -209,7 +209,7 @@ const sendresetOtp = async(req, res) => {
             resetPassOtpTemplate(user.firstName, otp)
         );
 
-        return res.status(200).json({ success: true, message: "Reset password OTP sent to email", otp: user.resetOtp });
+        return res.status(200).json({ success: true, message: "Reset password OTP sent to email" });
 
     } catch (error) {
         console.error("Error sending reset password OTP:", error);
@@ -248,6 +248,28 @@ const resetPassword = async(req, res) => {
     }
 }
 
+const checkAuth = async (req, res) => {
+    try { 
+        const user = req.user;
+        return res.status(200).json({
+            success: true,
+            user: {
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                userName: user.userName,
+                profileImage: user.profileImage,
+                userId: user._id,
+                isAccountVerified: user.isAccountVerified,
+                profileSetup: user.profileSetup,
+            }
+        });
+        
+    } catch (error) {
+        console.error("Error checking authentication:", error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
 
 const createUserProfile = async (req, res) => {
     try {
@@ -302,5 +324,51 @@ const createUserProfile = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+const updateUserProfile = async (req, res) => {
+    try{
 
-export { userSignup, userLogin, userLogout, sendVerificationOtp, verifyUserAccount, sendresetOtp, resetPassword, createUserProfile };
+        const userId = req.user._id;
+        const { firstName, lastName, userName } = req.body;
+
+        const isUsernameTaken = await userModel.findOne({ userName, _id: { $ne: userId } });
+        if (isUsernameTaken) return res.status(400).json({ success: false, message: "Username is already taken" });
+        
+        // finding user using id which is recieved by authUser middleware
+        const user = await userModel.findById(userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (userName) user.userName = userName;
+        const profile = req.file || null;
+        if (profile) {
+            const result = await cloudinary.uploader.upload(profile.path, {
+                folder: "chat-app/profile-images",
+                public_id: `${userId}_profile_image`,
+                overwrite: true,
+                resource_type: "image",
+            });
+            if (!result?.secure_url) return res.status(500).json({success: false,message: "Profile image upload failed"});
+            user.profileImage = result.secure_url;
+        }
+        await user.save();
+        return res.status(200).json({success: true, message: "Profile updated successfully",
+            user:{
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                userName: user.userName,
+                profileImage: user.profileImage,
+                userId: user._id,
+                isAccountVerified: user.isAccountVerified,
+                profileSetup: user.profileSetup,
+            }  
+        });
+
+    }catch(err){
+        console.error("Error updating user profile:", err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+export { userSignup, userLogin, userLogout, sendVerificationOtp, verifyUserAccount, sendresetOtp, resetPassword, createUserProfile, checkAuth, updateUserProfile };
