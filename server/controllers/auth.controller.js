@@ -278,6 +278,9 @@ const createUserProfile = async (req, res) => {
         const { lastName, userName } = req.body;
         if (!lastName || !userName) return res.status(400).json({ success: false, message: "Last name and username are required" });
 
+        const isUsernameTaken = await userModel.findOne({ userName });
+        if (isUsernameTaken) return res.status(400).json({ success: false, message: "Username is already taken" });
+
         // finding user using id which is recieved by authUser middleware
         const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
@@ -324,18 +327,24 @@ const createUserProfile = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
+
+
 const updateUserProfile = async (req, res) => {
     try{
 
         const userId = req.user._id;
         const { firstName, lastName, userName } = req.body;
 
-        const isUsernameTaken = await userModel.findOne({ userName, _id: { $ne: userId } });
-        if (isUsernameTaken) return res.status(400).json({ success: false, message: "Username is already taken" });
-        
-        // finding user using id which is recieved by authUser middleware
+                // finding user using id which is recieved by authUser middleware
         const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+
+        if( userName && userName !== user.userName ) {
+        const isUsernameTaken = await userModel.findOne({ userName, _id: { $ne: userId } });
+        if (isUsernameTaken) return res.status(400).json({ success: false, message: "Username is already taken" });
+        }
+    
 
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;

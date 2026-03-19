@@ -1,63 +1,113 @@
 import userStore from "../../../app/store"
+import Button from "../components/Button"
 import InputBox from "../components/inputBox"
+import { useState } from "react"
+import api from "../../../utils/axios"
+import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom"
+import ProfileAvatar from "../components/ProfileAvatar"
 
 const Profile = () => {
 
+
+    const navigate = useNavigate()
+
     const user = userStore((state) => state.user)
+
+    const newUser = !user?.profileSetup
+
+    const [firstName, setFirstName] = useState(user.firstName || "")
+    const [lastName, setLastName] = useState(user.lastName || "")
+    const [userName, setUsername] = useState(user.userName || "")
+    const [profileImage, setProfileImage] = useState(null)
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault()
+        const formData = new FormData()
+        if( firstName )formData.append("firstName", firstName)
+        if( lastName )formData.append("lastName", lastName)
+        if( userName )formData.append("userName", userName)
+        if( profileImage )formData.append("profileImage", profileImage)
+        if (newUser) {
+            try {
+                const res = await api.post("/auth/create-profile", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
+                if (res.data.success) {
+                    toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
+                    userStore.setState((state) => ({
+                        user: {
+                            ...state.user,
+                            firstName,
+                            lastName,
+                            userName,
+                            profileImage: res.data.profileImage,
+                            profileSetup: true
+                        }
+                    }))
+                    navigate("/")
+                }
+                console.log(res)
+            } catch (err) {
+                toast.error(err.response?.data?.message || "Failed to create profile")
+            }
+        } else {
+            try {
+                const res = await api.post("/auth/update-profile", formData)
+                if (res.data.success) {
+                    toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
+                    userStore.setState((state) => ({
+                        user: {
+                            ...state.user,
+                            firstName,
+                            lastName,
+                            userName,
+                            profileImage: profileImage ? res.data.profileImage : state.user.profileImage
+                        }
+                    }))
+                }
+                console.log(res)
+            } catch (err) {
+                console.log(err.response)
+                console.log(err.response?.data)
+                toast.error(err.response?.data?.message || "Failed to update profile")
+            }
+
+        }
+
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black flex items-center justify-center px-4">
 
-            <div className="w-full max-w-2xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-10">
+            <div className="w-full max-w-lg md:max-w-2xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 md:p-10">
 
-                <div className="flex items-center gap-12">
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
 
                     {/* Avatar Section */}
-                    <div className="flex flex-col items-center">
-
-                        <div className="relative group cursor-pointer">
-
-                            <div className="w-44 h-44 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 p-[3px]">
-
-                                <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-gray-400 text-sm border border-gray-800">
-                                    Upload
-                                </div>
-
-                            </div>
-
-                            <div className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm transition">
-                                Change
-                            </div>
-
-                        </div>
-
-                        <p className="text-gray-400 text-xs mt-3">
-                            Click to upload profile photo
-                        </p>
-
-                    </div>
+                    <ProfileAvatar profileImage={profileImage} userImage={user?.profileImage} setProfileImage={setProfileImage} />
 
                     {/* Form Section */}
-                    <div className="flex-1">
+                    <div className="flex-1 w-full">
 
-                        <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-white tracking-tight">
-                                Complete your profile
+                        <div className="mb-8 text-center md:text-left">
+                            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                                {newUser ? "Welcome! Let's set up your profile" : "Update Your Profile"}
                             </h2>
                             <p className="text-gray-400 mt-2">
-                                Set up your profile to start chatting with others
+                                {newUser ? "Start by adding your details and a profile picture." : "Make changes to your profile information below."}
                             </p>
                         </div>
 
-                        <form className="space-y-5">
+                        <form className="space-y-5" onSubmit={handleFormSubmit}>
 
-                            <InputBox value={user.firstName || ""} placeholder="First name" />
-                            <InputBox value={user.lastName || ""} placeholder="Last name" />
-                            <InputBox value={user.username || ""} placeholder="Username" />
+                            <InputBox value={firstName} placeholder="First name" required onChange={(e) => setFirstName(e.target.value)} />
+                            <InputBox value={lastName} placeholder="Last name" required onChange={(e) => setLastName(e.target.value)} />
+                            <InputBox value={userName} placeholder="Username" required onChange={(e) => setUsername(e.target.value)} />
 
-                            <button className="w-full mt-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:scale-[1.02] active:scale-[0.98] transition-all text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-900/40">
-                                Continue
-                            </button>
+                            <Button description={newUser ? "Create Profile" : "Update Profile"} type="submit" />
 
                         </form>
 
