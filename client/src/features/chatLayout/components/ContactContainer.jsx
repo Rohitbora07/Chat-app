@@ -1,10 +1,11 @@
 import React from 'react'
+import ProfileContainer from './Profile/ProfileContainer'
 
 const ContactContainer = () => {
   return (
     <div class="w-72 h-screen bg-gradient-to-b from-gray-900 to-gray-950 border-r border-gray-800 flex flex-col">
 
-      <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+      <div class="p-[22px]  border-b border-gray-800 flex items-center justify-between">
         <h1 class="text-xl font-semibold text-white tracking-wide">Chats</h1>
         <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 cursor-pointer transition">
           +
@@ -25,6 +26,7 @@ const ContactContainer = () => {
           <span class="text-xs text-gray-500">1h</span>
         </div>
       </div>
+      <ProfileContainer />
 
     </div>
   )
