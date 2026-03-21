@@ -9,26 +9,60 @@ const Chatpage = () => {
 
   const navigate = useNavigate()
 
+  // const [selectedChat, setSelectedChat] = useState(null)
+
   const user = userStore((state) => state.user)
   useEffect(() => {
-    if(!user.profileSetup){
+    if (!user.profileSetup) {
       navigate("/profile")
     }
-  },[user, navigate])
+  }, [user, navigate])
 
   return (
-    <div className="flex h-screen bg-gray-950 text-white">
+  <div className="flex h-screen bg-gray-950 text-white">
 
-      <ContactContainer />
+    {/* Contact → full screen on mobile */}
+    <ContactContainer />
 
-      <div className="flex-1">
-        {/* <EmptyChatContainer /> */}
-        {/* replace with ChatContainer when a chat is selected */}
-        <ChatContainer />
-      </div>
-
+    {/* Chat / Empty → hidden on small */}
+    <div className="hidden sm:flex flex-1">
+      {/* {selectedChat ? <ChatContainer /> : <EmptyChatContainer />} */}
+      <ChatContainer />
     </div>
-  )
+
+  </div>
+)
+//   return (
+//   <div className="flex h-screen bg-gray-950 text-white">
+
+//     {/* Contact Container → always visible, full screen on small */}
+//     <div className="flex w-full sm:w-64 md:w-72">
+//       <ContactContainer setSelectedChat={setSelectedChat} />
+//     </div>
+
+//     {/* Chat / Empty → hidden on small, visible on sm+ */}
+//     <div className="hidden sm:flex flex-1">
+//       {selectedChat ? <ChatContainer /> : <EmptyChatContainer />}
+//     </div>
+
+//   </div>
+// )
+
+  // return (
+  //   <div className="flex h-screen bg-gray-950 text-white">
+  //     <div className={`${selectedChat ? "hidden" : "flex" } sm:flex`}>
+  //       <ContactContainer setSelectedChat={setSelectedChat} />
+  //     </div>
+
+  //     <div className={`${selectedChat ? "hidden" : "flex" } sm:flex flex-1 hidden`}>
+  //       {/* {selectedChat ? <ChatContainer /> : <EmptyChatContainer/>} */}
+  //       <ChatContainer />
+  //     </div>
+
+
+  //     </div>
+
+  // )
 }
 
 export default Chatpage
