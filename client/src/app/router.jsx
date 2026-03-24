@@ -4,6 +4,7 @@ import AuthPage from "../features/Auth/pages/AuthPage";
 import Chatpage from "../features/chatLayout/pages/Chatpage";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Profile from "../features/Profile/pages/Profile";
+import Dialog from "../components/ui/SearchDialog";
 
 export const router = createBrowserRouter([
     {
@@ -30,4 +31,8 @@ export const router = createBrowserRouter([
         path: "/signup",
         element: <AuthPage  />
     },
+    {
+        path:"/test",
+        element: <Dialog />
+    }
 ]);

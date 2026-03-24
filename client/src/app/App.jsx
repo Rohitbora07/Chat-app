@@ -1,15 +1,15 @@
   import { RouterProvider } from "react-router-dom"
   import { router } from "./router"
   import { useEffect } from "react"
-  import userStore from "./store"
+  import useStore from "../store"
   import api from "../utils/axios"
 
 
   function App() {
 
-    const setUser = userStore((state) => state.setUser);
-    const setAuthLoading = userStore((state) => state.setAuthLoading);
-    const authLoading = userStore((state) => state.authLoading);
+    const setUser = useStore((state) => state.setUser);
+    const setAuthLoading = useStore((state) => state.setAuthLoading);
+    const authLoading = useStore((state) => state.authLoading);
 
 
     useEffect(() => {

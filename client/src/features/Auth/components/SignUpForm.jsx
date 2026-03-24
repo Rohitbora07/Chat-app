@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import api from '../../../utils/axios';
-import userStore from '../../../app/store';
+import useStore from '../../../store';
+import InputBox from '../../../components/ui/InputBox';
+import Button from '../../../components/ui/Button';
+import { SIGNUP_ROUTE } from '../../../constants/routes';
 
 const SignUpForm = () => {
 
     const navigate = useNavigate()
-    const setUser = userStore((state) => state.setUser)
+    const setUser = useStore((state) => state.setUser)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -17,7 +20,7 @@ const SignUpForm = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
-            const response = await api.post("/auth/signup",{firstName,email, password},{ withCredentials: true })
+            const response = await api.post(SIGNUP_ROUTE,{firstName,email, password},{ withCredentials: true })
             if(response.data.success){
                 toast.success("From is submmited")
                 setUser(response.data.user)
@@ -46,38 +49,9 @@ const SignUpForm = () => {
             onSubmit={handleFormSubmit}
             className="relative space-y-5">
             
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder=" First Name"
-                        required
-                        value={firstName}
-                        onChange={(e)=> setFirstName(e.target.value)}
-                        className="peer w-full px-4 py-2 rounded-xl bg-gray-800/70 text-white  focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                </div>
-
-                <div className="relative">
-                    <input
-                        type="email"
-                        placeholder=" Email Address"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="peer w-full px-4 py-2 rounded-xl bg-gray-800/70 text-white  focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                </div>
-
-                <div className="relative">
-                    <input
-                        type="password"
-                        placeholder=" Password"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="peer w-full px-4 py-2 rounded-xl bg-gray-800/70 text-white  focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                </div>
+            <InputBox value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" type="text" />
+            <InputBox value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" />
+            <InputBox value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
 
                 <div className="flex justify-between items-center text-xs text-gray-400">
                     <label className="flex items-center space-x-2 cursor-pointer">
@@ -92,12 +66,8 @@ const SignUpForm = () => {
                     </Link>
                 </div>
 
-                <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:scale-105 hover:shadow-indigo-500/30 text-white font-semibold transition duration-300"
-                >
-                    Sign Up
-                </button>
+
+                <Button description="Sign Up" type="submit" />
 
                 <p className="text-center text-xs text-gray-400 pt-2">
                     Already have an account?{" "}

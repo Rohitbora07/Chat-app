@@ -2,13 +2,16 @@ import  { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import api from '../../../utils/axios';
-import userStore from '../../../app/store';
+import InputBox from '../../../components/ui/InputBox';
+import Button from '../../../components/ui/Button';
+import { LOGIN_ROUTE } from '../../../constants/routes';
+import useStore from '../../../store';
 
 const LoginForm = () => {
 
     const navigate = useNavigate()
 
-    const setUser = userStore((state) => state.setUser)
+    const setUser = useStore((state) => state.setUser)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -18,7 +21,7 @@ const LoginForm = () => {
 
         try {
 
-            const res = await api.post("/auth/login", {email, password}, {withCredentials: true})
+            const res = await api.post(LOGIN_ROUTE, {email, password}, {withCredentials: true})
             if(res.data.success){
                 setUser(res.data.user)
                 toast.success("Logged in Succesfully")
@@ -47,27 +50,8 @@ const LoginForm = () => {
             onSubmit={handleLoginSubmit}
             className="relative space-y-5">
 
-                <div className="relative">
-                    <input
-                        type="email"
-                        placeholder=" Email Address"
-                        required
-                        value={email}
-                        onChange={(e)=> setEmail(e.target.value) }
-                        className="peer w-full px-4 py-4 rounded-xl bg-gray-800/70 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                </div>
-
-                <div className="relative">
-                    <input
-                        type="password"
-                        placeholder=" Password"
-                        required
-                        value={password}
-                        onChange={(e)=> setPassword(e.target.value) }
-                        className="peer w-full px-4 py-4 rounded-xl bg-gray-800/70 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                    />
-                </div>
+                <InputBox value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" />
+                <InputBox value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
 
                 <div className="flex justify-between items-center text-xs text-gray-400">
                     <label className="flex items-center space-x-2 cursor-pointer">
@@ -82,12 +66,7 @@ const LoginForm = () => {
                     </Link>
                 </div>
 
-                <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:scale-105 hover:shadow-indigo-500/30 text-white font-semibold transition duration-300"
-                >
-                    Sign In
-                </button>
+                <Button description="Login" type="submit" />
 
                 <p className="text-center text-xs text-gray-400 pt-2">
                     Don’t have an account?{" "}

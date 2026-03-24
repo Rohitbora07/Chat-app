@@ -1,11 +1,11 @@
 import { Navigate } from "react-router-dom";
-import userStore from "../app/store";
+import useStore from "../store";
 
 const ProtectedRoute = ({ children }) => {
 
-    const user = userStore((state) => state.user)
+    const user = useStore((state) => state.user)
 
-    const authLoading = userStore((state) => state.authLoading)
+    const authLoading = useStore((state) => state.authLoading)
 
     if (authLoading) {
         return <div>Loading...</div>

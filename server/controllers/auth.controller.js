@@ -335,7 +335,7 @@ const updateUserProfile = async (req, res) => {
         const userId = req.user._id;
         const { firstName, lastName, userName } = req.body;
 
-                // finding user using id which is recieved by authUser middleware
+        // finding user using id which is recieved by authUser middleware
         const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
@@ -380,23 +380,6 @@ const updateUserProfile = async (req, res) => {
     }
 }
 
-// const userLogout = async (req,res) => {
 
-
-//     try{
-//         res.clearCookie("token", {
-//             httpOnly: true,
-//             maxAge: maxAge * 1000,
-//             secure: true,
-//             sameSite: "None",
-//         });
-
-//         return res.status(200).json({ success: true, message: "User Successfully Logged Out" });
-//     }catch(err){
-//         console.log(err);
-//         return res.status(500).json({ success: false, message: err.message });
-//     }
-
-// }
 
 export { userSignup, userLogin, userLogout, sendVerificationOtp, verifyUserAccount, sendresetOtp, resetPassword, createUserProfile, checkAuth, updateUserProfile };

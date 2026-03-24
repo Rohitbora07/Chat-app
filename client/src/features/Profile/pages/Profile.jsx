@@ -1,18 +1,19 @@
-import userStore from "../../../app/store"
-import Button from "../components/Button"
-import InputBox from "../components/inputBox"
+import useStore from "../../../store"
+import InputBox from "../../../components/ui/InputBox"
+import Button from "../../../components/ui/Button"
 import { useState } from "react"
 import api from "../../../utils/axios"
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom"
 import ProfileAvatar from "../components/ProfileAvatar"
+import { CREATE_PROFILE_ROUTE, UPDATE_PROFILE_ROUTE } from "../../../constants/routes"
 
 const Profile = () => {
 
 
     const navigate = useNavigate()
 
-    const user = userStore((state) => state.user)
+    const user = useStore((state) => state.user)
 
     const newUser = !user?.profileSetup
 
@@ -30,14 +31,14 @@ const Profile = () => {
         if( profileImage )formData.append("profileImage", profileImage)
         if (newUser) {
             try {
-                const res = await api.post("/auth/create-profile", formData, {
+                const res = await api.post(CREATE_PROFILE_ROUTE, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
                 })
                 if (res.data.success) {
                     toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
-                    userStore.setState((state) => ({
+                    useStore.setState((state) => ({
                         user: {
                             ...state.user,
                             firstName,
@@ -55,10 +56,10 @@ const Profile = () => {
             }
         } else {
             try {
-                const res = await api.post("/auth/update-profile", formData)
+                const res = await api.post(UPDATE_PROFILE_ROUTE, formData)
                 if (res.data.success) {
                     toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
-                    userStore.setState((state) => ({
+                    useStore.setState((state) => ({
                         user: {
                             ...state.user,
                             firstName,

@@ -1,15 +1,8 @@
-import { Link } from "react-router-dom";
-// import { useEffect, useState } from "react";
 import SignUpForm from "./SignUpForm";
 import LoginForm from "./LoginForm";
 
 const FormData = ({initialMode}) => {
 
-    // const [currentState, setCurrentState] = useState(initialMode);
-
-    // useEffect(() => {
-    //     setCurrentState(initialMode)
-    // }, [initialMode])
 
 
     return (

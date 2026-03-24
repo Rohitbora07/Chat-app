@@ -1,6 +1,10 @@
 import React from 'react'
+import useStore from '../../../../store'
 
 const ChatHeader = () => {
+
+    const { closeChat } = useStore()
+
     return (
         <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-800 bg-gray-900">
 
@@ -15,7 +19,9 @@ const ChatHeader = () => {
 
             </div>
 
-            <button className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">
+            <button
+            onClick={closeChat}
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition">
                 ✕
             </button>
 
