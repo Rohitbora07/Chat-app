@@ -1,4 +1,5 @@
-export const AUTH_ROUTE = "/auth";
+export const HOST = import.meta.env.VITE_BACKEND_URL 
+export const AUTH_ROUTE = "/api/auth";
 export const SIGNUP_ROUTE = `${AUTH_ROUTE}/signup`;
 export const LOGIN_ROUTE = `${AUTH_ROUTE}/login`;
 export const VERIFY_ACCOUNT_ROUTE = `${AUTH_ROUTE}/verify-account`
@@ -11,5 +12,5 @@ export const UPDATE_PROFILE_ROUTE = `${AUTH_ROUTE}/update-profile`
 export const CHECK_AUTH_ROUTE = `${AUTH_ROUTE}/check-auth`
 
 
-export const CONTACT_ROUTE = "/contacts"
+export const CONTACT_ROUTE = "/api/contacts"
 export const SEARCH_CONTACTS_ROUTE = `${CONTACT_ROUTE}/search`

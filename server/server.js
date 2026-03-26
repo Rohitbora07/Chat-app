@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/auth.route.js";
 import connectCloudinary from "./config/cloudinary.js";
 import contactRouter from "./routes/contacts.routes.js";
+import setUpSocket from "./socket.js";
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,8 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
+setUpSocket(server)

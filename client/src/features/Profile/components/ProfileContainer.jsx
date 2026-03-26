@@ -9,7 +9,6 @@ import { LOGOUT_ROUTE } from '../../../constants/routes'
 
 const ProfileContainer = () => {
     const user = useStore((state) => state.user)
-    // const logout = userStore((state) => state.logout)/
     const navigate = useNavigate()
     const [open, setOpen] = useState(false) 
     const handleEdit = () => {

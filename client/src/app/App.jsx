@@ -3,6 +3,7 @@
   import { useEffect } from "react"
   import useStore from "../store"
   import api from "../utils/axios"
+import { CHECK_AUTH_ROUTE } from "../constants/routes"
 
 
   function App() {
@@ -15,7 +16,7 @@
     useEffect(() => {
       const checkAuth = async () => {
         try {
-          const res = await api.get("/auth/check-auth")
+          const res = await api.get(CHECK_AUTH_ROUTE)
           if (res.data.success) {
             setUser(res.data.user)
           }

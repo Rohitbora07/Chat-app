@@ -1,7 +1,8 @@
 import axios from "axios";
+import { HOST } from "../constants/routes";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_URL,
+    baseURL: HOST,
     withCredentials: true
 })
 
