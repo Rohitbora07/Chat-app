@@ -7,6 +7,7 @@ import userRouter from "./routes/auth.route.js";
 import connectCloudinary from "./config/cloudinary.js";
 import contactRouter from "./routes/contacts.routes.js";
 import setUpSocket from "./socket.js";
+import messagesRouter from "./routes/messages.routes.js";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", userRouter);
 app.use("/api/contacts", contactRouter);
+app.use("/api/messages", messagesRouter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)

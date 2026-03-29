@@ -40,7 +40,7 @@ const useSocket = (user) => {
                 socket.current.disconnect()
             }
         }
-    }, [user?.userId])
+    }, [user?.userId, user])
 
     return socket
 }
