@@ -10,7 +10,7 @@ const ContactContainer = () => {
   const [open, setOpen] = useState(false)
   const [newChatOpen, setNewChatOpen] = useState(false)
   const [newGroupOpen, setNewGroupOpen] = useState(false)
-  console.log(newChatOpen)
+  // console.log(newChatOpen)
 
 
 

@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import useStore from '../../../store'
+import userStore from '../../../store'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPencil, faPowerOff, faEllipsisV } from "@fortawesome/free-solid-svg-icons"
@@ -8,7 +8,7 @@ import api from '../../../utils/axios'
 import { LOGOUT_ROUTE } from '../../../constants/routes'
 
 const ProfileContainer = () => {
-    const user = useStore((state) => state.user)
+    const user = userStore((state) => state.user)
     const navigate = useNavigate()
     const [open, setOpen] = useState(false) 
     const handleEdit = () => {
@@ -21,7 +21,7 @@ const ProfileContainer = () => {
             const res = await api.post(LOGOUT_ROUTE)
             if(res.data.success){
                 toast.success("Logged out successfully")
-                useStore.setState({user: null})
+                userStore.setState({user: null})
                 navigate("/login")
                 setOpen(false)
             }

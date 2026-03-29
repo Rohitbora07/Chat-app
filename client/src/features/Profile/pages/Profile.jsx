@@ -1,4 +1,4 @@
-import useStore from "../../../store"
+import userStore from "../../../store"
 import InputBox from "../../../components/ui/InputBox"
 import Button from "../../../components/ui/Button"
 import { useState } from "react"
@@ -13,7 +13,7 @@ const Profile = () => {
 
     const navigate = useNavigate()
 
-    const user = useStore((state) => state.user)
+    const user = userStore((state) => state.user)
 
     const newUser = !user?.profileSetup
 
@@ -38,7 +38,7 @@ const Profile = () => {
                 })
                 if (res.data.success) {
                     toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
-                    useStore.setState((state) => ({
+                    userStore.setState((state) => ({
                         user: {
                             ...state.user,
                             firstName,
@@ -59,7 +59,7 @@ const Profile = () => {
                 const res = await api.post(UPDATE_PROFILE_ROUTE, formData)
                 if (res.data.success) {
                     toast.success(newUser ? "Profile created successfully" : "Profile updated successfully")
-                    useStore.setState((state) => ({
+                    userStore.setState((state) => ({
                         user: {
                             ...state.user,
                             firstName,

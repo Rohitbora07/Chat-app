@@ -5,13 +5,13 @@ import api from '../../../utils/axios';
 import InputBox from '../../../components/ui/InputBox';
 import Button from '../../../components/ui/Button';
 import { LOGIN_ROUTE } from '../../../constants/routes';
-import useStore from '../../../store';
+import userStore from '../../../store';
 
 const LoginForm = () => {
 
     const navigate = useNavigate()
 
-    const setUser = useStore((state) => state.setUser)
+    const setUser = userStore((state) => state.setUser)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')

@@ -4,14 +4,14 @@ import api from '../../utils/axios'
 import { toast } from 'react-toastify'
 import { SEARCH_CONTACTS_ROUTE } from '../../constants/routes'
 import ProfileCard from '../../features/Profile/components/ProfileCard'
-import useStore from '../../store'
+import userStore from '../../store'
 
 
 const SearchDialog = ({ title, onClose, description }) => {
 
     const [searchedContacts, setSearchedContacts] = useState([])
     const [searchTerm, setSearchTerm] = useState("")
-    const { setSelectedChatType, setSelectedChatData } = useStore()
+    const { setSelectedChatType, setSelectedChatData } = userStore()
 
     const searchContacts = async (searchTerm) => {
         try {

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import useStore from "../../../store"
+import userStore from "../../../store"
 import ChatContainer from "../components/ChatPage/ChatContainer"
 import ContactContainer from "../components/ChatPage/ContactContainer"
 import EmptyChatContainer from "../components/ChatPage/EmptyChatContainer"
@@ -11,9 +11,9 @@ const Chatpage = () => {
 
   // const [selectedChat, setSelectedChat] = useState(null)
 
-  const { user } = useStore()
-  const { selectedChatType } = useStore()
-  console.log({  selectedChatType })
+  const { user } = userStore()
+  const { selectedChatType } = userStore()
+  // console.log({  selectedChatType })
   useEffect(() => {
     if (!user.profileSetup) {
       navigate("/profile")

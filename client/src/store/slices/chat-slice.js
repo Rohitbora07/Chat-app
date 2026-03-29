@@ -16,6 +16,25 @@ const createChatSlice = (set, get) => ({
             selectedChatData: null,
             selectedChatMessages: []
         })
+    },
+    addMessage: (message) => {
+        const selectedChatMessages = get().selectedChatMessages
+        const selectedChatType = get().selectedChatType
+
+        set({
+            selectedChatMessages: [
+                ...selectedChatMessages,
+                {
+                    ...message,
+                    sender: selectedChatType === "channel"
+                    ? message.sender
+                    : message.sender._id,
+                    receiver: selectedChatType === "channel"
+                    ? message.receiver
+                    : message.receiver._id
+                }
+            ]
+        })
     }
 })
 

@@ -1,16 +1,16 @@
   import { RouterProvider } from "react-router-dom"
   import { router } from "./router"
   import { useEffect } from "react"
-  import useStore from "../store"
+  import userStore from "../store"
   import api from "../utils/axios"
 import { CHECK_AUTH_ROUTE } from "../constants/routes"
 
 
   function App() {
 
-    const setUser = useStore((state) => state.setUser);
-    const setAuthLoading = useStore((state) => state.setAuthLoading);
-    const authLoading = useStore((state) => state.authLoading);
+    const setUser = userStore((state) => state.setUser);
+    const setAuthLoading = userStore((state) => state.setAuthLoading);
+    const authLoading = userStore((state) => state.authLoading);
 
 
     useEffect(() => {

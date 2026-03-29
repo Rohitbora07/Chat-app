@@ -3,7 +3,7 @@ import React from 'react'
 const ProfileCard = ({ user, onClick }) => {
 
 
-    console.log(user)
+    // console.log(user)
 
     return (
         <div className="flex items-center gap-4 w-full p-3 rounded-xl hover:bg-gray-800/70 active:scale-[0.98] transition-all duration-200 cursor-pointer" onClick={onClick}>
