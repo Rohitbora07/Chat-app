@@ -28,6 +28,7 @@ const MessageBar = () => {
                 fileUrl: undefined
             })
         }
+        setMessage("")
         console.log("message", message)
     }
 

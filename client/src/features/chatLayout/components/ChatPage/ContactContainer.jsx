@@ -3,14 +3,34 @@ import ProfileContainer from '../../../Profile/components/ProfileContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus, faUserGroup, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import SearchDialog from '../../../../components/ui/SearchDialog'
+import { useEffect } from 'react'
+import api from '../../../../utils/axios'
+import { GET_CONTACTS_FOR_DM_LIST_ROUTE } from '../../../../constants/routes'
+import userStore from '../../../../store'
+import ContactList from '../../../../components/ui/ContactList'
 
 const ContactContainer = () => {
+
+  const { directMessageContacts, setDirectMessageContacts } = userStore()
 
 
   const [open, setOpen] = useState(false)
   const [newChatOpen, setNewChatOpen] = useState(false)
   const [newGroupOpen, setNewGroupOpen] = useState(false)
   // console.log(newChatOpen)
+
+  useEffect(() => {
+    const getContactsForDMList = async () => {
+
+
+      const res = await api.get(GET_CONTACTS_FOR_DM_LIST_ROUTE)
+      if (res.data.success) {
+        // console.log(res.data.contacts);
+        setDirectMessageContacts(res.data.contacts);
+      }
+    }
+    getContactsForDMList()
+  }, [setDirectMessageContacts])
 
 
 
@@ -81,14 +101,7 @@ const ContactContainer = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 space-y-1">
-        <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-800/70 transition cursor-pointer group">
-          <img src="https://i.pravatar.cc/42" className="w-11 h-11 rounded-full" />
-          <div className="flex-1">
-            <p className="text-white font-medium group-hover:text-blue-400 transition">Alex</p>
-            <p className="text-xs text-gray-400">See you tomorrow</p>
-          </div>
-          <span className="text-xs text-gray-500">1h</span>
-        </div>
+        <ContactList contacts={directMessageContacts} />
       </div>
       <div className=" hidden sm:block  " >
         <ProfileContainer />

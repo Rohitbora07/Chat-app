@@ -14,5 +14,8 @@ export const CHECK_AUTH_ROUTE = `${AUTH_ROUTE}/check-auth`
 
 export const CONTACT_ROUTE = "/api/contacts"
 export const SEARCH_CONTACTS_ROUTE = `${CONTACT_ROUTE}/search`
+export const GET_CONTACTS_FOR_DM_LIST_ROUTE = `${CONTACT_ROUTE}/get-contacts-for-dm-list`
 
-export const GET_ALL_MESSAGES_ROUTE = "/api/messages/get-all-messages"
+export const MESSAGE_ROUTE = "/api/messages"
+
+export const GET_ALL_MESSAGES_ROUTE = `${MESSAGE_ROUTE}/get-all-messages`
